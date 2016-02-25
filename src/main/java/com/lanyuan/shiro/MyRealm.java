@@ -92,6 +92,7 @@ public class MyRealm extends AuthorizingRealm {
 					ByteSource.Util.bytes(username + "" + userFormMaps.get(0).get("credentialsSalt")),// salt=username+salt
 					getName() // realm name
 			);
+			
 			// 当验证都通过后，把用户信息放在session里
 			Session session = SecurityUtils.getSubject().getSession();
 			session.setAttribute("userSession", userFormMaps.get(0));
