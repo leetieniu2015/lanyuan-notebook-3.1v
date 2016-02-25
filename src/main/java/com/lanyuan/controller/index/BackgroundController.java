@@ -28,6 +28,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -48,7 +49,7 @@ import com.mysql.jdbc.Connection;
  * @author lanyuan 2015-04-05
  * @Email: mmm333zzz520@163.com
  * @version 3.0v
- * @mod  Ekko 2015-09-07
+ * @mod Ekko 2015-09-07
  */
 @Controller
 @RequestMapping("/")
@@ -59,7 +60,7 @@ public class BackgroundController extends BaseController {
 
 	@Inject
 	private UserLoginMapper userLoginMapper;
-	
+
 	/**
 	 * @return
 	 */
@@ -70,16 +71,14 @@ public class BackgroundController extends BaseController {
 	}
 
 	@RequestMapping(value = "login", method = RequestMethod.POST, produces = "text/html; charset=utf-8")
-	public String login(String username, String password, HttpServletRequest request) {
+	public String login(@RequestParam(value = "username") String username,
+			@RequestParam(value = "password") String password, HttpServletRequest request) {
 		try {
-			if (!request.getMethod().equals("POST")) {
-				request.setAttribute("error", "支持POST方法提交！");
-			}
 			if (Common.isEmpty(username) || Common.isEmpty(password)) {
 				request.setAttribute("error", "用户名或密码不能为空！");
 				return "/login";
 			}
-			// 想要得到 SecurityUtils.getSubject()　的对象．．访问地址必须跟ｓｈｉｒｏ的拦截地址内．不然后会报空指针
+			// 想要得到 SecurityUtils.getSubject() 的对象．．访问地址必须跟shiro的拦截地址内．不然后会报空指针
 			Subject user = SecurityUtils.getSubject();
 			// 用户输入的账号和密码,,存到UsernamePasswordToken对象中..然后由shiro内部认证对比,
 			// 认证执行者交由ShiroDbRealm中doGetAuthenticationInfo处理
@@ -122,12 +121,13 @@ public class BackgroundController extends BaseController {
 	@RequestMapping("index")
 	public String index(Model model) throws Exception {
 		// 获取登录的bean
-		HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
-		UserFormMap userFormMap = (UserFormMap)Common.findUserSession(request);
+		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
+				.getRequest();
+		UserFormMap userFormMap = (UserFormMap) Common.findUserSession(request);
 		ResFormMap resFormMap = new ResFormMap();
 		resFormMap.put("userId", userFormMap.get("id"));
 		List<ResFormMap> mps = resourcesMapper.findRes(resFormMap);
-		//List<ResFormMap> mps = resourcesMapper.findByWhere(new ResFormMap());
+		// List<ResFormMap> mps = resourcesMapper.findByWhere(new ResFormMap());
 		List<TreeObject> list = new ArrayList<TreeObject>();
 		for (ResFormMap map : mps) {
 			TreeObject ts = new TreeObject();
@@ -161,16 +161,14 @@ public class BackgroundController extends BaseController {
 	}
 
 	@RequestMapping("download")
-	public void download(String fileName, HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+	public void download(String fileName, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		response.setContentType("text/html;charset=utf-8");
 		request.setCharacterEncoding("UTF-8");
 		java.io.BufferedInputStream bis = null;
 		java.io.BufferedOutputStream bos = null;
 
-		String ctxPath = request.getSession().getServletContext().getRealPath("/") + "\\"
-				+ "filezip\\";
+		String ctxPath = request.getSession().getServletContext().getRealPath("/") + "\\" + "filezip\\";
 		String downLoadPath = ctxPath + fileName;
 		System.out.println(downLoadPath);
 		try {
@@ -195,6 +193,7 @@ public class BackgroundController extends BaseController {
 				bos.close();
 		}
 	}
+
 	@RequestMapping(value = "logout", method = RequestMethod.GET)
 	public String logout() {
 		// 使用权限管理工具进行用户的退出，注销登录
@@ -217,7 +216,7 @@ public class BackgroundController extends BaseController {
 			ScriptRunner runner = new ScriptRunner(conn);
 			runner.setErrorLogWriter(null);
 			runner.setLogWriter(null);
-			runner.runScript((new InputStreamReader(getClass().getResourceAsStream("/intall.sql"),"UTF-8")));
+			runner.runScript((new InputStreamReader(getClass().getResourceAsStream("/intall.sql"), "UTF-8")));
 
 		} catch (Exception e) {
 			e.printStackTrace();

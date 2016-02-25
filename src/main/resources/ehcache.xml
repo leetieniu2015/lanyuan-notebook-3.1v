@@ -75,7 +75,7 @@
            overflowToDisk="false"
            statistics="true">
     </cache> 
-<cache name="shiro-kickout-session"
+	<cache name="shiro-kickout-session"
            maxEntriesLocalHeap="2000"
            eternal="false"
            timeToIdleSeconds="3600"

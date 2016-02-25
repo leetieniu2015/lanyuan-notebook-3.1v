@@ -23,8 +23,7 @@
 	<bean id="exceptionHandler" class="com.lanyuan.exception.MyExceptionHandler" />
 	<!-- 初始化数据 -->
 
-	<bean
-		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="locations">
 			<list>
 				<value>classpath:jdbc.properties</value>

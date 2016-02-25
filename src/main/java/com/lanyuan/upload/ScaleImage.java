@@ -58,7 +58,6 @@ public class ScaleImage {
 		double scaleH, scaleV;
 		scaleH = (double) w / (double) width;
 		scaleV = (double) h / (double) height;
-		// �?��判断�?��scaleH，scaleV，不做放大操�?
 		if (scaleH >= 1.0 && scaleV >= 1.0) {
 			return 1;
 		}
